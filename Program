@@ -1,0 +1,62 @@
+namespace TestBitOperator
+{
+    class Program
+    {
+        private const int a = 32;
+        private const int b = 1024;
+
+        private const string entropy = "abcdfepozxv0123456789";
+
+        static void Main(string[] args)
+        {
+            Message("Get salt", ConsoleColor.DarkYellow);
+            int salt = GetSalt();
+            Message($"Salt: {salt}", ConsoleColor.DarkYellow);
+
+            for (int i = 5; i >= 0; i--)
+            {
+                if (i == 0)
+                {
+                    Message($"Start operation!", ConsoleColor.Red);
+                    break;
+                }
+
+                Message($"Start operation: {i}", ConsoleColor.DarkYellow);
+                Thread.Sleep(1000);
+            }
+
+            int count = 0;
+            int result = 0;
+            string maskA = "mkf75a504d5275afb1ccd298b5c5dde1";
+            string maskB = "B32xbA+dTPxhTYc0syFw+Hlgif2xkLwMJhAyMf88iKR07Ne4I2zB/QkpuWZaLj26bbaMwcUlXDIPUFB7DZTatNtVLGN26DZ2K9XZpiOm7Ux67tSMSeWFvcprQTfeyGMC4dmMKqJx70opZFzoz6K8Vg==";
+            for (int y = 0; y < maskA.Length; y++)
+            {
+                for (int z = 0; z < maskB.Length; z++)
+                {
+                    if ((maskA[y].GetHashCode() >> maskB[z].GetHashCode()) == entropy[count])
+                    {
+                        count++;
+                        result += (y * z);
+                    }
+                }
+            }
+
+            Message($"Result: {result}", ConsoleColor.Green);
+
+            Console.ReadLine();
+        }
+
+        private static int GetSalt()
+        {
+            const int temp1 = (a >> 3) << (b >> 2) << (a >> 1);
+            return temp1 << temp1;
+        }
+
+        private static void Message(string message, ConsoleColor color)
+        {
+            Console.ForegroundColor = color;
+            Console.WriteLine(message);
+            Console.ForegroundColor = ConsoleColor.Gray;
+        }
+    }
+}
